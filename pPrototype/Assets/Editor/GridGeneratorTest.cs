@@ -4,7 +4,6 @@ using NUnit.Framework;
 
 public class GridGeneratorTest 
 {
-
 	[Test]
 	//[Ignore]
 	public void EmptyGridTest()
