@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEditor;
+﻿using pPrototype;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 [TestFixture]
@@ -10,6 +10,58 @@ public class LevelPlayModelTest
 	{
 		var model = LevelPlayModelFactory.Create();
 		Assert.IsTrue(model != null && model.CurrentState == LevelPlayState.Unstarted);
+	}
+}
+
+[TestFixture]
+public class LevelParserTest
+{
+	[Test]
+	public void SimpleTest()
+	{
+		// background: red, type: cube
+		//		front: white, back: red
+		//		left: blue, right: green
+		//		top: orange, bottom: yellow
+
+		var data = "RcwrBGoy";
+		var level = new List<string> { data };
+		var levelPlayModel = LevelPlayModelFactory.Create(level, 1, 1);
+
+		Assert.IsTrue(levelPlayModel.CurrentState == LevelPlayState.Unstarted);
+		Assert.IsFalse(levelPlayModel.CellCorrect(0, 0));
+
+		levelPlayModel.MakeAMove(new Move(0, 0, MoveInput.SwipeRight));
+
+		Assert.IsTrue(levelPlayModel.CurrentState == LevelPlayState.Ongoing);
+		Assert.IsFalse(levelPlayModel.CellCorrect(0,0));
+
+		levelPlayModel.MakeAMove(new Move(0, 0, MoveInput.SwipeRight));
+
+		Assert.IsTrue(levelPlayModel.CellCorrect(0, 0));
+		Assert.IsTrue(levelPlayModel.CurrentState == LevelPlayState.Won);
+	}
+
+	[Test]
+	public void DoubleTest()
+	{
+		var cellOne = "RcwrBGoy";
+		var cellTwo = "RcrwBGoy";
+
+		var level = new List<string> { cellOne, cellTwo };
+		var lpm = LevelPlayModelFactory.Create(level, 2, 1);
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Unstarted);
+
+		lpm.MakeAMove(new Move(0, 0, MoveInput.SwipeRight));
+		lpm.MakeAMove(new Move(0, 0, MoveInput.SwipeRight));
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Ongoing);
+
+		lpm.MakeAMove(new Move(1, 0, MoveInput.SwipeUp));
+		lpm.MakeAMove(new Move(1, 0, MoveInput.SwipeUp));
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Won);
 	}
 }
 
@@ -36,6 +88,44 @@ public class CubeModelTest
 	{
 		var cube = new CubeModel();
 		Assert.IsTrue(cube.Front == Colour.Red);
+	}
+
+	[Test]
+	public void ComplicatedRotationTest()
+	{
+		var cube = new CubeModel(front: Colour.Red, back: Colour.Green, left: Colour.Yellow, right: Colour.Blue, top: Colour.White, bottom: Colour.Orange);
+
+		var correct = IsShowing(cube, Colour.Red);
+
+		cube.Update(MoveInput.SwipeRight);	correct &= IsShowing(cube, Colour.Yellow);
+		cube.Update(MoveInput.SwipeDown);	correct &= IsShowing(cube, Colour.White);
+		cube.Update(MoveInput.SwipeLeft);	correct &= IsShowing(cube, Colour.Red);
+		cube.Update(MoveInput.SwipeUp);		correct &= IsShowing(cube, Colour.Yellow);
+
+		Assert.IsTrue(correct);
+	}
+
+	[Test]
+	public void ComplicatedRotationTestTwo()
+	{
+		var cube = new CubeModel(front: Colour.Red, back: Colour.Green, left: Colour.Yellow, right: Colour.Blue, top: Colour.White, bottom: Colour.Orange);
+
+		var correct = IsShowing(cube, Colour.Red);
+
+		cube.Update(MoveInput.SwipeUp);		correct &= IsShowing(cube, Colour.Orange);
+		cube.Update(MoveInput.SwipeDown);	correct &= IsShowing(cube, Colour.Red);
+		cube.Update(MoveInput.SwipeDown);	correct &= IsShowing(cube, Colour.White);
+		cube.Update(MoveInput.SwipeLeft);	correct &= IsShowing(cube, Colour.Blue);
+		cube.Update(MoveInput.SwipeLeft);	correct &= IsShowing(cube, Colour.Orange);
+		cube.Update(MoveInput.SwipeLeft);	correct &= IsShowing(cube, Colour.Yellow);
+		cube.Update(MoveInput.SwipeUp);		correct &= IsShowing(cube, Colour.Red);
+
+		Assert.IsTrue(correct);
+	}
+
+	private bool IsShowing(CubeModel cube, Colour colour)
+	{
+		return cube.Front == colour;
 	}
 
 	[Test]
