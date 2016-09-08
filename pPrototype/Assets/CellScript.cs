@@ -6,9 +6,13 @@ namespace pPrototype
 	{
 		public CubeScript Cube;
 		public BgPanelScript Background;
+		public int Column;
+		public int Row;
 
-		public void Setup(Colour backgroundColour, CubeModel cube)
+		public void Setup(int column, int row, Colour backgroundColour, CubeModel cube)
 		{
+			Column = column;
+			Row = row;
 			SetupCube(cube);
 			SetupBackground(backgroundColour);
 		}
