@@ -1,9 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace pPrototype
 {
 	public class CubeScript : MonoBehaviour
 	{
+		public const float ROT_DEGREE_PER_FRAME = 3f;
+
 		public MeshRenderer Front;
 		public MeshRenderer Back;
 		public MeshRenderer Left;
@@ -43,7 +46,49 @@ namespace pPrototype
 
 		public void Rotate(float aroundX, float aroundY, float aroundZ)
 		{
-			this.transform.Rotate(new Vector3(aroundX, aroundY, aroundZ), Space.World);
+			StartCoroutine(AnimRotate(aroundX, aroundY, aroundZ));
+		}
+
+		private IEnumerator AnimRotate(float aroundX, float aroundY, float aroundZ)
+		{
+			var goal = 0f;
+
+			var deltaX = GetDelta(aroundX, ref goal);
+			var deltaY = GetDelta(aroundY, ref goal);
+			var deltaZ = GetDelta(aroundZ, ref goal);
+
+			var increment = Mathf.Max(Mathf.Abs(deltaX), Mathf.Abs(deltaY), Mathf.Abs(deltaZ));
+
+			goal = Mathf.Abs(goal);
+			var sum = 0f;
+
+			while (sum < goal)
+			{
+				this.transform.Rotate(new Vector3(deltaX, deltaY, deltaZ), Space.World);
+
+				yield return new WaitForEndOfFrame();
+
+				sum += increment;
+			}
+		}
+
+		private float GetDelta(float rotation, ref float goal)
+		{
+			if (!Mathf.Approximately(rotation, 0f))
+			{
+				goal = rotation;
+
+				if (rotation > 0f)
+				{
+					return ROT_DEGREE_PER_FRAME;
+				}
+				else
+				{
+					return -ROT_DEGREE_PER_FRAME;
+				}
+			}
+
+			return 0f;
 		}
 
 		private Material GetMaterialForColour(Colour colour)
