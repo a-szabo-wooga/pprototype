@@ -1,11 +1,31 @@
-﻿namespace pPrototype
+﻿using System.Collections.Generic;
+
+namespace pPrototype
 {
+	public class PlayerMove
+	{
+		public int[] UpdatedIndices;
+		public MoveInput Input;
+	}
+
 	public class LevelPlayModel
 	{
 		public BackgroundModel Background;
 		public ForegroundModel Foreground;
 		public LevelPlayData Statistics = new LevelPlayData();
 		public LevelPlayState CurrentState = LevelPlayState.Unstarted;
+
+		private Stack<PlayerMove> _moves = new Stack<PlayerMove>();
+
+		public PlayerMove GetLastMove()
+		{
+			if (_moves != null || _moves.Count > 0)
+			{
+				return _moves.Peek();
+			}
+
+			return null;
+		}
 
 		public void SetBackground(int columns, int rows, Colour[] colours)
 		{
@@ -47,7 +67,7 @@
 		private void Update(Move move)
 		{
 			Statistics.MovesStarted++;
-			Foreground.Update(move);
+			_moves.Push(Foreground.Update(move));
 			UpdateCurrentState();
 		}
 

@@ -9,6 +9,11 @@ namespace pPrototype
 			return new LevelPlayModel();
 		}
 
+		public static LevelPlayModel Create(LevelData data)
+		{
+			return Create(data.Cells, data.Columns, data.Rows);
+		}
+
 		public static LevelPlayModel Create(List<string> level, int columns, int rows)
 		{
 			var lpm = new LevelPlayModel();

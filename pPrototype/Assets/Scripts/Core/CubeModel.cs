@@ -40,8 +40,10 @@
 			_bottom = bottom;
 		}
 
-		public void Update(MoveInput input)
+		public bool Update(MoveInput input)
 		{
+			var success = true;
+
 			switch (input)
 			{
 				case MoveInput.SwipeRight: SwipeRight(); break;
@@ -50,8 +52,11 @@
 				case MoveInput.SwipeDown: SwipeDown(); break;
 
 				default:
+					success = false;
 					break;
 			}
+
+			return success;
 		}
 
 		private void SwipeRight()

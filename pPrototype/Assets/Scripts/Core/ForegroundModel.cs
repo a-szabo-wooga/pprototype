@@ -25,6 +25,18 @@
 			return true;
 		}
 
+		public CubeModel GetCubeModelOrNull(int column, int row)
+		{
+			var id = GetID(column, row);
+
+			if (_cubes == null || _cubes.Length <= id)
+			{
+				return null;
+			}
+
+			return _cubes[id];
+		}
+
 		public int GetID(int column, int row)
 		{
 			return (row * Columns) + column;
@@ -42,26 +54,24 @@
 			AssignCubes(cubes);
 		}
 
-		public void Update(Move move)
+		public PlayerMove Update(Move move)
 		{
 			switch (move.Input)
 			{
 				case MoveInput.SwipeRight:
 				case MoveInput.SwipeLeft:
-					UpdateRow(move.Row, move.Input);
-					break;
+					return UpdateRow(move.Row, move.Input);
 
 				case MoveInput.SwipeUp:
 				case MoveInput.SwipeDown:
-					UpdateColumn(move.Column, move.Input);
-					break;
+					return UpdateColumn(move.Column, move.Input);
 
 				default:
-					break;
+					return null;
 			}
 		}
 
-		private void UpdateRow(int row, MoveInput input)
+		private PlayerMove UpdateRow(int row, MoveInput input)
 		{
 			var indicesToUpdate = new int[Columns];
 			var offset = row * Columns;
@@ -71,10 +81,10 @@
 				indicesToUpdate[i] = offset + i;
 			}
 
-			DoUpdate(indicesToUpdate, input);
+			return DoUpdate(indicesToUpdate, input);
 		}
 
-		private void UpdateColumn(int column, MoveInput input)
+		private PlayerMove UpdateColumn(int column, MoveInput input)
 		{
 			var indicesToUpdate = new int[Rows];
 
@@ -83,15 +93,29 @@
 				indicesToUpdate[i] = column + (Columns * i);
 			}
 
-			DoUpdate(indicesToUpdate, input);
+			return DoUpdate(indicesToUpdate, input);
 		}
 
-		private void DoUpdate(int[] indicesToUpdate, MoveInput input)
+		private PlayerMove DoUpdate(int[] indicesToUpdate, MoveInput input)
 		{
+			var playerMove = new PlayerMove();
+
+			playerMove.UpdatedIndices = new int[indicesToUpdate.Length];
+			playerMove.Input = input;
+
 			for (int i = 0; i < indicesToUpdate.Length; ++i)
 			{
-				_cubes[indicesToUpdate[i]].Update(input);
+				var cube = _cubes[indicesToUpdate[i]];
+
+				if (cube != null)
+				{
+					cube.Update(input);
+				}
+
+				playerMove.UpdatedIndices[i] = indicesToUpdate[i];
 			}
+
+			return playerMove;
 		}
 
 		private void AssignCubes(CubeModel[] cubes)
