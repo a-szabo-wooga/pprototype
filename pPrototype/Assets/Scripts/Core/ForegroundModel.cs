@@ -54,24 +54,24 @@
 			AssignCubes(cubes);
 		}
 
-		public PlayerMove Update(Move move)
+		public PlayerMove Update(Move move, bool fakeIt = false)
 		{
 			switch (move.Input)
 			{
 				case MoveInput.SwipeRight:
 				case MoveInput.SwipeLeft:
-					return UpdateRow(move.Row, move.Input);
+					return UpdateRow(move.Row, move.Input, fakeIt);
 
 				case MoveInput.SwipeUp:
 				case MoveInput.SwipeDown:
-					return UpdateColumn(move.Column, move.Input);
+					return UpdateColumn(move.Column, move.Input, fakeIt);
 
 				default:
 					return null;
 			}
 		}
 
-		private PlayerMove UpdateRow(int row, MoveInput input)
+		private PlayerMove UpdateRow(int row, MoveInput input, bool fakeIt)
 		{
 			var indicesToUpdate = new int[Columns];
 			var offset = row * Columns;
@@ -81,10 +81,10 @@
 				indicesToUpdate[i] = offset + i;
 			}
 
-			return DoUpdate(indicesToUpdate, input);
+			return DoUpdate(indicesToUpdate, input, fakeIt);
 		}
 
-		private PlayerMove UpdateColumn(int column, MoveInput input)
+		private PlayerMove UpdateColumn(int column, MoveInput input, bool fakeIt)
 		{
 			var indicesToUpdate = new int[Rows];
 
@@ -93,10 +93,10 @@
 				indicesToUpdate[i] = column + (Columns * i);
 			}
 
-			return DoUpdate(indicesToUpdate, input);
+			return DoUpdate(indicesToUpdate, input, fakeIt);
 		}
 
-		private PlayerMove DoUpdate(int[] indicesToUpdate, MoveInput input)
+		private PlayerMove DoUpdate(int[] indicesToUpdate, MoveInput input, bool fakeIt)
 		{
 			var playerMove = new PlayerMove();
 
@@ -107,7 +107,7 @@
 			{
 				var cube = _cubes[indicesToUpdate[i]];
 
-				if (cube != null)
+				if (cube != null && !fakeIt)
 				{
 					cube.Update(input);
 				}

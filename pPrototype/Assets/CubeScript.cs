@@ -6,6 +6,7 @@ namespace pPrototype
 	public class CubeScript : MonoBehaviour
 	{
 		public const float ROT_DEGREE_PER_FRAME = 3f;
+		public const float FAKE_MAGNITUDE_THRESHOLD = 0.001f;
 
 		public MeshRenderer Front;
 		public MeshRenderer Back;
@@ -21,6 +22,9 @@ namespace pPrototype
 		public Material Orange;
 		public Material White;
 
+		private float _fakedRotation;
+		private float _lastFakedMagnitude;
+
 		public void Setup(CubeModel model)
 		{
 			Front.material = GetMaterialForColour(model.Front);
@@ -31,22 +35,82 @@ namespace pPrototype
 			Bottom.material = GetMaterialForColour(model.Bottom);
 		}
 
-		public void Refresh(MoveInput input)
+		public void Refresh(MoveInput input, float degree = 90f, bool tween = true)
 		{
+			if (tween)
+			{
+				degree -= _fakedRotation;
+			}
+
 			switch (input)
 			{
-				case MoveInput.SwipeLeft: 	Rotate(0f, 90f, 0f); break;
-				case MoveInput.SwipeRight: 	Rotate(0f, -90f, 0f); break;
-				case MoveInput.SwipeUp:		Rotate(90f, 0f, 0f); break;
-				case MoveInput.SwipeDown:	Rotate(-90f, 0f, 0f); break;
+				case MoveInput.SwipeLeft: 	Rotate(0f, degree, 0f, tween); break;
+				case MoveInput.SwipeRight: 	Rotate(0f, -degree, 0f, tween); break;
+				case MoveInput.SwipeUp:		Rotate(degree, 0f, 0f, tween); break;
+				case MoveInput.SwipeDown:	Rotate(-degree, 0f, 0f, tween); break;
 				default:
 					break;
 			}
+
+			if (tween)
+			{
+				ResetFakeRotation();
+			}
 		}
 
-		public void Rotate(float aroundX, float aroundY, float aroundZ)
+		private void ResetFakeRotation()
 		{
-			StartCoroutine(AnimRotate(aroundX, aroundY, aroundZ));
+			_lastFakedMagnitude = 0f;
+			_fakedRotation = 0f;
+		}
+
+		public float GetMoveSign(MoveInput Input)
+		{
+			switch (Input)
+			{
+				case MoveInput.SwipeRight:
+				case MoveInput.SwipeDown:
+					return -1;
+
+				default:
+					return 1;
+			}
+		}
+
+		public void FakeSwipe(MoveInput input, float magnitude)
+		{
+			var magDifference = _lastFakedMagnitude - magnitude;
+
+			if (Mathf.Abs(magDifference) > FAKE_MAGNITUDE_THRESHOLD)
+			{
+				_lastFakedMagnitude = magnitude;
+
+				var sign = GetMoveSign(input);
+				var rotDegree = sign * ROT_DEGREE_PER_FRAME;
+
+				if ((magDifference > 0f) == (rotDegree < 0f))
+				{
+					_fakedRotation += rotDegree;
+					Refresh(input, rotDegree, false);
+				}
+				else
+				{
+					_fakedRotation -= rotDegree;
+					Refresh(input, -rotDegree, false);
+				}
+			}
+		}
+
+		public void Rotate(float aroundX, float aroundY, float aroundZ, bool tween = true)
+		{
+			if (tween)
+			{
+				StartCoroutine(AnimRotate(aroundX, aroundY, aroundZ));
+			}
+			else
+			{
+				this.transform.Rotate(new Vector3(aroundX, aroundY, aroundZ), Space.World);
+			}
 		}
 
 		private IEnumerator AnimRotate(float aroundX, float aroundY, float aroundZ)

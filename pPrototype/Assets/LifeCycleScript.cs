@@ -30,6 +30,15 @@ namespace pPrototype
 			}
 		}
 
+		public void FakeSwipe(Move move, float magnitude)
+		{
+			if (MoveOK(move))
+			{
+				var playerMove = _lpm.Foreground.Update(move, fakeIt: true);
+				LevelManager.FakeSwipe(playerMove, magnitude);
+			}
+		}
+
 		private bool MoveOK(Move move)
 		{
 			switch (move.Input)

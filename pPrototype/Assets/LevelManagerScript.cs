@@ -42,18 +42,21 @@ namespace pPrototype
 			}
 		}
 
+		public void FakeSwipe(PlayerMove move, float magnitude)
+		{
+			if (move != null)
+			{
+				foreach (var id in move.UpdatedIndices)
+				{
+					_cells[id].FakeSwipe(move.Input, magnitude);
+				}
+			}
+		}
+
 		private void PositionCamera(LevelPlayModel lpm)
 		{
 			Camera.main.transform.position = new Vector3(CAM_POS_X, CAM_POS_Y, CAM_POS_Z);
 			Camera.main.transform.rotation = Quaternion.Euler(new Vector3(CAM_ROT_X, CAM_ROT_Y, CAM_ROT_Z));
-
-			/*var width = lpm.Background.Columns;
-			var height = lpm.Background.Rows;
-
-			var cameraPositionX = (width - 1) * (BGSIZE / 2f);
-			var cameraPositionY = (height - 1) * (BGSIZE / 2f);
-
-			Camera.main.transform.position = new Vector3(cameraPositionX, -cameraPositionY, CAM_DISTANCE);*/
 		}
 
 		private void SpawnCells(LevelPlayModel lpm)

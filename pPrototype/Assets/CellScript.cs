@@ -25,6 +25,14 @@ namespace pPrototype
 			}
 		}
 
+		public void FakeSwipe(MoveInput input, float magnitude)
+		{
+			if (Cube.gameObject.activeInHierarchy)
+			{
+				Cube.FakeSwipe(input, magnitude);
+			}
+		}
+
 		private void SetupCube(CubeModel cube)
 		{
 			if (cube != null)

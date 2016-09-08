@@ -67,7 +67,7 @@ namespace pPrototype
 		private void Update(Move move)
 		{
 			Statistics.MovesStarted++;
-			_moves.Push(Foreground.Update(move));
+			_moves.Push(Foreground.Update(move, fakeIt: false));
 			UpdateCurrentState();
 		}
 

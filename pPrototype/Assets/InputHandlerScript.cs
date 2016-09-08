@@ -84,7 +84,10 @@ namespace pPrototype
 						StartNewSwipe(hAbs > vAbs ? SwipeDirection.Horizontal : SwipeDirection.Vertical);
 					}
 
-					UpdateSwipe(delta, deltaMagnitude, _onGoingSwipe);
+					if (_onGoingSwipe != SwipeDirection.None && _swipeStartCell != null)
+					{
+						UpdateSwipe(delta, deltaMagnitude, _onGoingSwipe);
+					}
 				}
 				else
 				{
@@ -104,6 +107,11 @@ namespace pPrototype
 			{
 				LifeCycle.HandleInput(new Move(_swipeStartCell.Column, _swipeStartCell.Row, GetMoveInputFromDelta(delta, direction)));
 				ResetSwipe();
+			}
+			else
+			{
+				LifeCycle.FakeSwipe(new Move(_swipeStartCell.Column, _swipeStartCell.Row, GetMoveInputFromDelta(delta, direction)),
+							    deltaMagnitude);
 			}
 		}
 
