@@ -15,7 +15,10 @@ namespace pPrototype
 
 		public void Refresh(MoveInput input)
 		{
-			Cube.Refresh(input);
+			if (Cube.gameObject.activeInHierarchy)
+			{
+				Cube.Refresh(input);
+			}
 		}
 
 		private void SetupCube(CubeModel cube)

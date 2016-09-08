@@ -16,7 +16,7 @@
 			colour = Colour.None;
 
 			var id = GetID(column, row);
-			if (_cubes == null || _cubes.Length <= id)
+			if (_cubes == null || _cubes.Length <= id || _cubes[id] == null)
 			{
 				return false;
 			}

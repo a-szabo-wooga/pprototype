@@ -7,7 +7,7 @@ namespace pPrototype
 	{
 		public static LevelData MockLevelData()
 		{
-			return Mock2x2();
+			return Mock3x3();
 		}
 
 		public static LevelData Mock3x3()
