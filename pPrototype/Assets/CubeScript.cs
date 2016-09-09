@@ -22,17 +22,64 @@ namespace pPrototype
 		public Material Orange;
 		public Material White;
 
+		public Material Red_Transparent;
+		public Material Green_Transparent;
+		public Material Blue_Transparent;
+		public Material Yellow_Transparent;
+		public Material Orange_Transparent;
+		public Material White_Transparent;
+
+		private MeshRenderer _cubeMeshRenderer;
+		private MeshRenderer OwnMeshRenderer
+		{
+			get
+			{
+				if (_cubeMeshRenderer == null)
+				{
+					_cubeMeshRenderer = GetComponent<MeshRenderer>();
+				}
+
+				return _cubeMeshRenderer;
+			}
+		}
+
+		private CubeModel _model;
 		private float _fakedRotation;
 		private float _lastFakedMagnitude;
+		private MoveInput _fakedInput;
 
 		public void Setup(CubeModel model)
 		{
-			Front.material = GetMaterialForColour(model.Front);
-			Back.material = GetMaterialForColour(model.Back);
-			Left.material = GetMaterialForColour(model.Left);
-			Right.material = GetMaterialForColour(model.Right);
-			Top.material = GetMaterialForColour(model.Top);
-			Bottom.material = GetMaterialForColour(model.Bottom);
+			_model = model;
+			SetColor(_model, false);
+		}
+
+		public void SetColor(CubeModel model, bool transparent)
+		{
+			Front.material = GetMaterialForColour(model.Front, transparent);
+			Back.material = GetMaterialForColour(model.Back, transparent);
+			Left.material = GetMaterialForColour(model.Left, transparent);
+			Right.material = GetMaterialForColour(model.Right, transparent);
+			Top.material = GetMaterialForColour(model.Top, transparent);
+			Bottom.material = GetMaterialForColour(model.Bottom, transparent);
+		}
+
+		public void SetTransparent(bool isTransparent)
+		{
+			OwnMeshRenderer.enabled = !isTransparent;
+
+			var shownFrontSide = _model.SideFacingForward;
+
+			switch (shownFrontSide)
+			{
+				case Side.Front:	Front.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				case Side.Back:		Back.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				case Side.Left:		Left.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				case Side.Right:	Right.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				case Side.Top:		Top.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				case Side.Bottom:	Bottom.material = GetMaterialForColour(_model.Front, isTransparent); break;
+				default: break;
+			}
 		}
 
 		public void Refresh(MoveInput input, float degree = 90f, bool tween = true)
@@ -62,6 +109,7 @@ namespace pPrototype
 		{
 			_lastFakedMagnitude = 0f;
 			_fakedRotation = 0f;
+			_fakedInput = MoveInput.None;
 		}
 
 		public float GetMoveSign(MoveInput Input)
@@ -77,6 +125,15 @@ namespace pPrototype
 			}
 		}
 
+		public void ClearFakeSwipe()
+		{
+			if (!Mathf.Approximately(_fakedRotation, 0f))
+			{
+				Refresh(_fakedInput, -_fakedRotation, false);
+				ResetFakeRotation();
+			}
+		}
+
 		public void FakeSwipe(MoveInput input, float magnitude)
 		{
 			var magDifference = _lastFakedMagnitude - magnitude;
@@ -84,6 +141,7 @@ namespace pPrototype
 			if (Mathf.Abs(magDifference) > FAKE_MAGNITUDE_THRESHOLD)
 			{
 				_lastFakedMagnitude = magnitude;
+				_fakedInput = input;
 
 				var sign = GetMoveSign(input);
 				var rotDegree = sign * ROT_DEGREE_PER_FRAME;
@@ -105,6 +163,7 @@ namespace pPrototype
 		{
 			if (tween)
 			{
+				LevelManagerScript.CubeIsMoving();
 				StartCoroutine(AnimRotate(aroundX, aroundY, aroundZ));
 			}
 			else
@@ -134,6 +193,8 @@ namespace pPrototype
 
 				sum += increment;
 			}
+
+			LevelManagerScript.CubeStoppedMoving();
 		}
 
 		private float GetDelta(float rotation, ref float goal)
@@ -155,16 +216,16 @@ namespace pPrototype
 			return 0f;
 		}
 
-		private Material GetMaterialForColour(Colour colour)
+		private Material GetMaterialForColour(Colour colour, bool transparent)
 		{
 			switch (colour)
 			{
-				case Colour.Blue: return Blue;
-				case Colour.Green: return Green;
-				case Colour.Red: return Red;
-				case Colour.Yellow: return Yellow;
-				case Colour.White: return White;
-				case Colour.Orange: return Orange;
+				case Colour.Blue: return transparent ? Blue_Transparent : Blue;
+				case Colour.Green: return transparent ? Green_Transparent : Green;
+				case Colour.Red: return transparent ? Red_Transparent : Red;
+				case Colour.Yellow: return transparent ? Yellow_Transparent : Yellow;
+				case Colour.White: return transparent ? White_Transparent : White;
+				case Colour.Orange: return transparent ? Orange_Transparent : Orange;
 				default:
 					return null;
 			}

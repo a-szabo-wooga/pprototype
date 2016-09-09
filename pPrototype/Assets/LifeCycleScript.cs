@@ -22,21 +22,35 @@ namespace pPrototype
 
 		public void HandleInput(Move move)
 		{
-			if (MoveOK(move))
+			if (LevelManager.CanMove() && MoveOK(move))
 			{
+				LevelManager.SetTransparentFronts(false);
 				_lpm.MakeAMove(move);
 				LevelManager.Refresh(_lpm);
 				EvaluateLevelState();
 			}
 		}
 
+		public void SetTransparentFronts(bool isTransparent)
+		{
+			if (LevelManager.CanMove())
+			{
+				LevelManager.SetTransparentFronts(isTransparent);
+			}
+		}
+
 		public void FakeSwipe(Move move, float magnitude)
 		{
-			if (MoveOK(move))
+			if (LevelManager.CanMove() && MoveOK(move))
 			{
 				var playerMove = _lpm.Foreground.Update(move, fakeIt: true);
 				LevelManager.FakeSwipe(playerMove, magnitude);
 			}
+		}
+
+		public void Snapback()
+		{
+			LevelManager.ClearFakeSwipe();
 		}
 
 		private bool MoveOK(Move move)
@@ -58,7 +72,10 @@ namespace pPrototype
 
 		private void EvaluateLevelState()
 		{
-			// TODO
+			if (_lpm.CurrentState == LevelPlayState.Won)
+			{
+				//TODO
+			}
 		}
 	}
 }

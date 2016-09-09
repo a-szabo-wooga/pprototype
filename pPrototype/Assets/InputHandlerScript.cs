@@ -16,7 +16,7 @@ namespace pPrototype
 		public const int NONE = -1;
 		public const int LMB = 0;
 		public const float SWIPE_START_THRESHOLD = 0.01f;
-		public const float SWIPE_COMMIT_THRESHOLD = 0.1f;
+		public const float SWIPE_COMMIT_THRESHOLD = 0.05f;
 
 		public LifeCycleScript LifeCycle;
 
@@ -61,6 +61,10 @@ namespace pPrototype
 
 			if (Input.GetMouseButtonUp(LMB))
 			{
+				if (_onGoingSwipe != SwipeDirection.None)
+				{
+					LifeCycle.Snapback();
+				}
 				_swipeStartPos = Vector3.zero;
 				_onGoingSwipe = SwipeDirection.None;
 			}
@@ -110,8 +114,8 @@ namespace pPrototype
 			}
 			else
 			{
-				LifeCycle.FakeSwipe(new Move(_swipeStartCell.Column, _swipeStartCell.Row, GetMoveInputFromDelta(delta, direction)),
-							    deltaMagnitude);
+				//LifeCycle.FakeSwipe(new Move(_swipeStartCell.Column, _swipeStartCell.Row, GetMoveInputFromDelta(delta, direction)),
+				//			    deltaMagnitude);
 			}
 		}
 
@@ -163,6 +167,16 @@ namespace pPrototype
 					LifeCycle.HandleInput(new Move(id, id, direction));
 					_rowOrColumnID = NONE;
 				}
+			}
+
+			if (Input.GetKeyDown(KeyCode.Space))
+			{
+				LifeCycle.SetTransparentFronts(true);
+			}
+
+			if (Input.GetKeyUp(KeyCode.Space))
+			{
+				LifeCycle.SetTransparentFronts(false);
 			}
 		}
 

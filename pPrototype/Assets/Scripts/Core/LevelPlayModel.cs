@@ -19,7 +19,7 @@ namespace pPrototype
 
 		public PlayerMove GetLastMove()
 		{
-			if (_moves != null || _moves.Count > 0)
+			if (_moves != null && _moves.Count > 0)
 			{
 				return _moves.Peek();
 			}

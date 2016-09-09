@@ -25,6 +25,27 @@ namespace pPrototype
 			}
 		}
 
+		public void LightUpBackground(bool state)
+		{
+			Background.LightUp(state);
+		}
+
+		public void SetTransparentFront(bool state)
+		{
+			if (Cube.gameObject.activeInHierarchy)
+			{
+				Cube.SetTransparent(state);
+			}
+		}
+
+		public void ClearFakeSwipe()
+		{
+			if (Cube.gameObject.activeInHierarchy)
+			{
+				Cube.ClearFakeSwipe();
+			}
+		}
+
 		public void FakeSwipe(MoveInput input, float magnitude)
 		{
 			if (Cube.gameObject.activeInHierarchy)

@@ -21,12 +21,40 @@ namespace pPrototype
 
 		private Dictionary <int, CellScript> _cells;
 
+		private static int _movingCubes;
+
+		public static void CubeIsMoving()
+		{
+			_movingCubes++;
+		}
+
+		public static void CubeStoppedMoving()
+		{
+			_movingCubes--;
+
+			Debug.Assert(_movingCubes >= 0);
+		}
+
 		public void Setup(LevelPlayModel lpm)
 		{
 			DeleteExistingChildren();
 			CreateNewContainer();
 			SpawnCells(lpm);
 			PositionCamera(lpm);
+			Refresh(lpm);
+		}
+
+		public bool CanMove()
+		{
+			return _movingCubes == 0;
+		}
+
+		public void SetTransparentFronts(bool isTransparent)
+		{
+			foreach (var cell in _cells.Values)
+			{
+				cell.SetTransparentFront(isTransparent);
+			}
 		}
 
 		public void Refresh(LevelPlayModel model)
@@ -40,6 +68,19 @@ namespace pPrototype
 					_cells[id].Refresh(lastMove.Input);
 				}
 			}
+
+			LightUpCorrectCells(model);
+		}
+
+		private void LightUpCorrectCells(LevelPlayModel model)
+		{
+			foreach (var cell in _cells.Values)
+			{
+				var col = cell.Column;
+				var row = cell.Row;
+
+				cell.LightUpBackground(model.CellCorrect(col, row));
+			}
 		}
 
 		public void FakeSwipe(PlayerMove move, float magnitude)
@@ -51,6 +92,14 @@ namespace pPrototype
 					_cells[id].FakeSwipe(move.Input, magnitude);
 				}
 			}
+		}
+
+		public void ClearFakeSwipe()
+		{
+			foreach (var cell in _cells.Values)
+			{
+				cell.ClearFakeSwipe();
+			}	
 		}
 
 		private void PositionCamera(LevelPlayModel lpm)
