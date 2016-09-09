@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
 
 namespace pPrototype
 {
@@ -6,7 +6,29 @@ namespace pPrototype
 	{
 		public static LevelData MockLevelData()
 		{
-			return Mock3x3();
+			return CreateLevel(4);
+		}
+
+		public static LevelData CreateLevel(int level)
+		{
+			var textAsset = Resources.Load<TextAsset>(string.Format("Levels/Level_{0}", level));
+			var levelData = JsonUtility.FromJson<LevelData>(textAsset.text);
+			return levelData;
+		}
+
+		/*public static LevelData Level01()
+		{
+			var data = new LevelData();
+
+			data.Columns = 1;
+			data.Rows = 1;
+
+			data.Cells = new List<string>
+			{
+				"RcWWrrOO"
+			};
+
+			return data;
 		}
 
 		public static LevelData Mock3x3()
@@ -50,7 +72,7 @@ namespace pPrototype
 			};
 
 			return data;
-		}
+		}*/
 	}
 }
 

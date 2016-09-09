@@ -4,13 +4,28 @@ namespace pPrototype
 {
 	public class LifeCycleScript : MonoBehaviour
 	{
+		public const int LEVEL_COUNT = 5;
+		public const int START_AT_LEVEL = 5;
+
 		public LevelManagerScript LevelManager;
 		public GameObject WinPanel;
 		private LevelPlayModel _lpm;
 
+		private int _lastLevelPlayed = 1;
+
 		private void Awake()
 		{
 			Application.targetFrameRate = 30;
+			LoadProgress();
+		}
+
+		private void LoadProgress()
+		{
+			#if UNITY_EDITOR
+			_lastLevelPlayed = START_AT_LEVEL;
+			#else
+			_lastLevelPlayed = PlayerPrefs.GetInt("LAST_LEVEL", 1);
+			#endif
 		}
 
 		private void Start()
@@ -20,16 +35,15 @@ namespace pPrototype
 
 		public void Reset()
 		{
-			var levelData = LoadLevelData();
+			var levelData = LoadLevelData(_lastLevelPlayed);
 			_lpm = LevelPlayModelFactory.Create(levelData);
 			LevelManager.Setup(_lpm);
 			WinPanel.gameObject.SetActive(false);
 		}
 
-		private LevelData LoadLevelData()
+		private LevelData LoadLevelData(int levelToLoad)
 		{
-			//TODO: don't mock
-			return LevelDataFactory.MockLevelData();
+			return LevelDataFactory.CreateLevel(levelToLoad);
 		}
 
 		public void HandleInput(Move move)
@@ -91,8 +105,28 @@ namespace pPrototype
 		{
 			if (_lpm.CurrentState == LevelPlayState.Won)
 			{
-				WinPanel.gameObject.SetActive(true);
+				WinGame();
 			}
+		}
+
+		private void WinGame()
+		{
+			WinPanel.gameObject.SetActive(true);
+		}
+
+		public void LoadNextLevel()
+		{
+			_lastLevelPlayed++;
+
+			if (_lastLevelPlayed > LEVEL_COUNT)
+			{
+				_lastLevelPlayed = 1;
+			}
+
+			PlayerPrefs.SetInt("LAST_LEVEL", _lastLevelPlayed);
+			PlayerPrefs.Save();
+
+			Reset();
 		}
 	}
 }

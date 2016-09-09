@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace pPrototype
 {
@@ -11,7 +12,7 @@ namespace pPrototype
 
 		public static LevelPlayModel Create(LevelData data)
 		{
-			return Create(data.Cells, data.Columns, data.Rows);
+			return Create(data.Cells.ToList(), data.Columns, data.Rows);
 		}
 
 		public static LevelPlayModel Create(List<string> level, int columns, int rows)

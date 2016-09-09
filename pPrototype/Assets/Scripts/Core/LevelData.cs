@@ -6,7 +6,7 @@ namespace pPrototype
 	{
 		public int Columns;
 		public int Rows;
-		public List<string> Cells;
+		public string[] Cells;
 	}
 }
 
