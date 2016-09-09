@@ -4,8 +4,8 @@ namespace pPrototype
 {
 	public class LifeCycleScript : MonoBehaviour
 	{
-		public const int LEVEL_COUNT = 5;
-		public const int START_AT_LEVEL = 5;
+		public const int LEVEL_COUNT = 7;
+		public const int START_AT = 1;
 
 		public LevelManagerScript LevelManager;
 		public GameObject WinPanel;
@@ -22,7 +22,7 @@ namespace pPrototype
 		private void LoadProgress()
 		{
 			#if UNITY_EDITOR
-			_lastLevelPlayed = START_AT_LEVEL;
+			_lastLevelPlayed = START_AT;
 			#else
 			_lastLevelPlayed = PlayerPrefs.GetInt("LAST_LEVEL", 1);
 			#endif

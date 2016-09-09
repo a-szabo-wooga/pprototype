@@ -104,7 +104,16 @@ namespace pPrototype
 
 		private void PositionCamera(LevelPlayModel lpm)
 		{
-			Camera.main.transform.position = new Vector3(CAM_POS_X, CAM_POS_Y, CAM_POS_Z);
+			var basicPos = new Vector3(CAM_POS_X, CAM_POS_Y, CAM_POS_Z);
+
+			var rowCount = lpm.Background.Rows;
+			var colCount = lpm.Background.Columns;
+
+			basicPos.x -= (3 - colCount) * 1f;
+			basicPos.y += (3 - rowCount) * 1f;
+
+			Camera.main.transform.position = basicPos;
+
 			Camera.main.transform.rotation = Quaternion.Euler(new Vector3(CAM_ROT_X, CAM_ROT_Y, CAM_ROT_Z));
 		}
 
