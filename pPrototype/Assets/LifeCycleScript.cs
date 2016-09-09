@@ -5,7 +5,13 @@ namespace pPrototype
 	public class LifeCycleScript : MonoBehaviour
 	{
 		public LevelManagerScript LevelManager;
+		public GameObject WinPanel;
 		private LevelPlayModel _lpm;
+
+		private void Awake()
+		{
+			Application.targetFrameRate = 30;
+		}
 
 		private void Start()
 		{
@@ -17,6 +23,7 @@ namespace pPrototype
 			var levelData = LoadLevelData();
 			_lpm = LevelPlayModelFactory.Create(levelData);
 			LevelManager.Setup(_lpm);
+			WinPanel.gameObject.SetActive(false);
 		}
 
 		private LevelData LoadLevelData()
@@ -60,6 +67,11 @@ namespace pPrototype
 
 		private bool MoveOK(Move move)
 		{
+			if (!_lpm.CanStillMakeMoves())
+			{
+				return false;
+			}
+
 			switch (move.Input)
 			{
 				case MoveInput.SwipeRight:
@@ -79,7 +91,7 @@ namespace pPrototype
 		{
 			if (_lpm.CurrentState == LevelPlayState.Won)
 			{
-				//TODO
+				WinPanel.gameObject.SetActive(true);
 			}
 		}
 	}
