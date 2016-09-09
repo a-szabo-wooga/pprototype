@@ -4,7 +4,7 @@ namespace pPrototype
 {
 	public class PlayerMove
 	{
-		public int[] UpdatedIndices;
+		public List<int> UpdatedIndices;
 		public MoveInput Input;
 	}
 

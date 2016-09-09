@@ -29,6 +29,8 @@ namespace pPrototype
 		public Material Orange_Transparent;
 		public Material White_Transparent;
 
+		public BlockerScript Blockers;
+
 		private MeshRenderer _cubeMeshRenderer;
 		private MeshRenderer OwnMeshRenderer
 		{
@@ -52,6 +54,7 @@ namespace pPrototype
 		{
 			_model = model;
 			SetColor(_model, false);
+			Blockers.Setup(model);
 		}
 
 		public void SetColor(CubeModel model, bool transparent)

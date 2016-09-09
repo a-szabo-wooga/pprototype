@@ -1,4 +1,6 @@
-﻿namespace pPrototype
+﻿using System.Collections.Generic;
+
+namespace pPrototype
 {
 	public enum CellType
 	{
@@ -73,12 +75,12 @@
 
 		private PlayerMove UpdateRow(int row, MoveInput input, bool fakeIt)
 		{
-			var indicesToUpdate = new int[Columns];
+			var indicesToUpdate = new List<int>();
 			var offset = row * Columns;
 
 			for (int i = 0; i < Columns; ++i)
 			{
-				indicesToUpdate[i] = offset + i;
+				indicesToUpdate.Add(offset + i);
 			}
 
 			return DoUpdate(indicesToUpdate, input, fakeIt);
@@ -86,33 +88,38 @@
 
 		private PlayerMove UpdateColumn(int column, MoveInput input, bool fakeIt)
 		{
-			var indicesToUpdate = new int[Rows];
+			var indicesToUpdate = new List<int>();
 
 			for (int i = 0; i < Rows; ++i)
 			{
-				indicesToUpdate[i] = column + (Columns * i);
+				indicesToUpdate.Add(column + (Columns * i));
 			}
 
 			return DoUpdate(indicesToUpdate, input, fakeIt);
 		}
 
-		private PlayerMove DoUpdate(int[] indicesToUpdate, MoveInput input, bool fakeIt)
+		private PlayerMove DoUpdate(List<int> indicesToUpdate, MoveInput input, bool fakeIt)
 		{
 			var playerMove = new PlayerMove();
 
-			playerMove.UpdatedIndices = new int[indicesToUpdate.Length];
+			playerMove.UpdatedIndices = new List<int>();
 			playerMove.Input = input;
 
-			for (int i = 0; i < indicesToUpdate.Length; ++i)
+			for (int i = 0; i < indicesToUpdate.Count; ++i)
 			{
 				var cube = _cubes[indicesToUpdate[i]];
 
-				if (cube != null && !fakeIt)
+				var couldHandleIt = false;
+
+				if (cube != null && !fakeIt) 
 				{
-					cube.Update(input);
+					couldHandleIt = cube.Update(input);
 				}
 
-				playerMove.UpdatedIndices[i] = indicesToUpdate[i];
+				if (couldHandleIt)
+				{
+					playerMove.UpdatedIndices.Add(indicesToUpdate[i]);
+				}
 			}
 
 			return playerMove;

@@ -112,6 +112,11 @@ namespace pPrototype
 			basicPos.x -= (3 - colCount) * 1f;
 			basicPos.y += (3 - rowCount) * 1f;
 
+			if (colCount > 3)
+			{
+				basicPos.z -= (colCount - 3) * 1.8f;
+			}
+
 			Camera.main.transform.position = basicPos;
 
 			Camera.main.transform.rotation = Quaternion.Euler(new Vector3(CAM_ROT_X, CAM_ROT_Y, CAM_ROT_Z));

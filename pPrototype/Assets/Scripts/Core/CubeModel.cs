@@ -35,6 +35,7 @@ namespace pPrototype
 		public Colour Bottom { get { return _bottom; } }
 
 		private Dictionary <Side, Side> _s = new Dictionary<Side, Side>();
+		private List<MoveInput> _locked = new List<MoveInput>();
 
 		public Side SideFacingForward
 		{
@@ -78,6 +79,11 @@ namespace pPrototype
 
 		public bool Update(MoveInput input)
 		{
+			if (_locked.Contains(input))
+			{
+				return false;
+			}
+
 			var success = true;
 
 			switch (input)
@@ -93,6 +99,32 @@ namespace pPrototype
 			}
 
 			return success;
+		}
+
+		public bool IsLocked(MoveInput input)
+		{
+			return _locked.Contains(input);
+		}
+
+		public void Lock(params MoveInput[] inputs)
+		{
+			if (inputs != null && inputs.Length > 0)
+			{
+				_locked.AddRange(inputs);
+			}
+		}
+
+		public void UnLock(MoveInput input, params MoveInput[] inputs)
+		{
+			_locked.Remove(input);
+
+			if (inputs != null && inputs.Length > 0)
+			{
+				foreach (var inp in inputs)
+				{
+					_locked.Remove(inp);
+				}
+			}
 		}
 
 		private void SwipeRight()

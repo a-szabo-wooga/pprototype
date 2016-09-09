@@ -19,11 +19,6 @@ public class LevelParserTest
 	[Test]
 	public void SimpleTest()
 	{
-		// background: red, type: cube
-		//		front: white, back: red
-		//		left: blue, right: green
-		//		top: orange, bottom: yellow
-
 		var data = "RcwrBGoy";
 		var level = new List<string> { data };
 		var levelPlayModel = LevelPlayModelFactory.Create(level, 1, 1);
@@ -91,6 +86,44 @@ public class CubeModelTest
 	}
 
 	[Test]
+	public void SimpleCubeParserTest()
+	{
+		var cube = LevelPlayModelFactory.CreateCubeFromConfig("RcWWrrWW");
+		Assert.IsTrue(IsShowing(cube, Colour.White));
+	}
+
+	[Test]
+	public void LockedCubeParserTest()
+	{
+		var cube = LevelPlayModelFactory.CreateCubeFromConfig("RcWWrrWW_tbrl");
+
+		Assert.IsTrue(cube.IsLocked(MoveInput.SwipeDown));
+	}
+
+
+	[Test]
+	public void HLockedCubeRotationTest()
+	{
+		var cube = new CubeModel(front: Colour.Red, back: Colour.White, left: Colour.White, 
+								 right: Colour.White, top: Colour.White, bottom: Colour.White);
+
+		cube.Lock(MoveInput.SwipeLeft, MoveInput.SwipeRight);
+
+		cube.Update(MoveInput.SwipeLeft);
+
+		Assert.IsTrue(IsShowing(cube, Colour.Red));
+
+		cube.Update(MoveInput.SwipeRight);
+
+		Assert.IsTrue(IsShowing(cube, Colour.Red));
+
+		cube.UnLock(MoveInput.SwipeLeft);
+		cube.Update(MoveInput.SwipeLeft);
+
+		Assert.IsTrue(IsShowing(cube, Colour.White));
+	}
+
+	[Test]
 	public void ComplicatedRotationTest()
 	{
 		var cube = new CubeModel(front: Colour.Red, back: Colour.Green, left: Colour.Yellow, right: Colour.Blue, top: Colour.White, bottom: Colour.Orange);
@@ -108,7 +141,8 @@ public class CubeModelTest
 	[Test]
 	public void ComplicatedRotationTestTwo()
 	{
-		var cube = new CubeModel(front: Colour.Red, back: Colour.Green, left: Colour.Yellow, right: Colour.Blue, top: Colour.White, bottom: Colour.Orange);
+		var cube = new CubeModel(front: Colour.Red, back: Colour.Green, left: Colour.Yellow, 
+								right: Colour.Blue, top: Colour.White, bottom: Colour.Orange);
 
 		var correct = IsShowing(cube, Colour.Red);
 

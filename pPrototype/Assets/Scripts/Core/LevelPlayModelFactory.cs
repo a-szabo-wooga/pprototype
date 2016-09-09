@@ -59,7 +59,33 @@ namespace pPrototype
 			var top		= Parser.ParseColour(cellData[6]);
 			var bottom	= Parser.ParseColour(cellData[7]);
 
-			return new CubeModel(front, back, left, right, top, bottom);
+			var cube = new CubeModel(front, back, left, right, top, bottom);
+
+			SetBlockers(cellData, cube);
+
+			return cube ;
+		}
+
+		private static void SetBlockers(string cellData, CubeModel cube)
+		{
+			var stringParts = cellData.Split('_');
+
+			if (stringParts.Length > 1)
+			{
+				var locks = stringParts[1];
+				var setLocks = new List<MoveInput>();
+				var lockCount = 0;
+
+				if (locks.Contains('t')) { setLocks.Add(MoveInput.SwipeUp); lockCount++; }
+				if (locks.Contains('b')) { setLocks.Add(MoveInput.SwipeDown); lockCount++; }
+				if (locks.Contains('r')) { setLocks.Add(MoveInput.SwipeRight); lockCount++;}
+				if (locks.Contains('l')) { setLocks.Add(MoveInput.SwipeLeft); lockCount++; }
+
+				var lockArray = new MoveInput[lockCount];
+				setLocks.CopyTo(lockArray);
+
+				cube.Lock(lockArray);
+			}
 		}
 
 		public static CubeModel CreateSpecialCube()

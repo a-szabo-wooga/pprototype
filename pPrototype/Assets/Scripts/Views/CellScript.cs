@@ -27,7 +27,10 @@ namespace pPrototype
 
 		public void LightUpBackground(bool state)
 		{
-			Background.LightUp(state);
+			if (Background.gameObject.activeInHierarchy)
+			{
+				Background.LightUp(state);
+			}
 		}
 
 		public void SetTransparentFront(bool state)

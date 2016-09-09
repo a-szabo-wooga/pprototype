@@ -4,8 +4,8 @@ namespace pPrototype
 {
 	public class LifeCycleScript : MonoBehaviour
 	{
-		public const int LEVEL_COUNT = 7;
-		public const int START_AT = 1;
+		public const int LEVEL_COUNT = 10;
+		public const int START_AT = 10;
 
 		public LevelManagerScript LevelManager;
 		public GameObject WinPanel;
