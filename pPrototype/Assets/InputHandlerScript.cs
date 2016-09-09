@@ -171,13 +171,18 @@ namespace pPrototype
 
 			if (Input.GetKeyDown(KeyCode.Space))
 			{
-				LifeCycle.SetTransparentFronts(true);
+				SetTransparency(true);
 			}
 
 			if (Input.GetKeyUp(KeyCode.Space))
 			{
-				LifeCycle.SetTransparentFronts(false);
+				SetTransparency(false);
 			}
+		}
+
+		public void SetTransparency(bool state)
+		{
+			LifeCycle.SetTransparentFronts(state);
 		}
 
 		private int GetRowOrColumnID()

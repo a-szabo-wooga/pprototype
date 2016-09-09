@@ -69,10 +69,10 @@ namespace pPrototype
 		private void SetupSideBookkeeping()
 		{
 			_s[Side.Front]	= Side.Front;
-			_s[Side.Back]		= Side.Back;
-			_s[Side.Left]		= Side.Left;
+			_s[Side.Back]	= Side.Back;
+			_s[Side.Left]	= Side.Left;
 			_s[Side.Right]	= Side.Right;
-			_s[Side.Top]		= Side.Top;
+			_s[Side.Top]	= Side.Top;
 			_s[Side.Bottom]	= Side.Bottom;
 		}
 

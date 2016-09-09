@@ -5,7 +5,7 @@ namespace pPrototype
 {
 	public class CubeScript : MonoBehaviour
 	{
-		public const float ROT_DEGREE_PER_FRAME = 3f;
+		public const float ROT_DEGREE_PER_FRAME = 6f;
 		public const float FAKE_MAGNITUDE_THRESHOLD = 0.001f;
 
 		public MeshRenderer Front;
