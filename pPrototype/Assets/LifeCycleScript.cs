@@ -9,6 +9,11 @@ namespace pPrototype
 
 		private void Start()
 		{
+			Reset();
+		}
+
+		public void Reset()
+		{
 			var levelData = LoadLevelData();
 			_lpm = LevelPlayModelFactory.Create(levelData);
 			LevelManager.Setup(_lpm);

@@ -15,8 +15,8 @@ namespace pPrototype
 	{
 		public const int NONE = -1;
 		public const int LMB = 0;
-		public const float SWIPE_START_THRESHOLD = 0.01f;
-		public const float SWIPE_COMMIT_THRESHOLD = 0.05f;
+		public const float SWIPE_START_THRESHOLD = 0.002f;
+		public const float SWIPE_COMMIT_THRESHOLD = 0.01f;
 
 		public LifeCycleScript LifeCycle;
 
@@ -29,6 +29,10 @@ namespace pPrototype
 
 		private void Awake()
 		{
+			#if UNITY_ANDROID
+			Input.simulateMouseWithTouches = true;
+			#endif
+
 			SetupAlphaKeys();
 		}
 

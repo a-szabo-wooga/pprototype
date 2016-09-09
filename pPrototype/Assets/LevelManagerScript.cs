@@ -12,7 +12,7 @@ namespace pPrototype
 		public const float CAM_POS_Y = 2.6f;
 		public const float CAM_POS_Z = -10f;
 
-		public const float CAM_ROT_X = 20f;
+		public const float CAM_ROT_X = 30f;
 		public const float CAM_ROT_Y = 342f;
 		public const float CAM_ROT_Z = 2.2f;
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace pPrototype
 {
@@ -7,7 +6,7 @@ namespace pPrototype
 	{
 		public static LevelData MockLevelData()
 		{
-			return Mock2x2();
+			return Mock3x3();
 		}
 
 		public static LevelData Mock3x3()
