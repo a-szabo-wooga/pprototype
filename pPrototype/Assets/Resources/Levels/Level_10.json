@@ -12,5 +12,7 @@
 		"RcWBrrBW",
 		"Rcrwwwwr",
 		"RcWBrrBW"
-	]
+	],
+	"LockedRows" :
+	[ 0, 2 ]
 }
