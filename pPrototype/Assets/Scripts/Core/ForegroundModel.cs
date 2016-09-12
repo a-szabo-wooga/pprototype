@@ -46,6 +46,9 @@ namespace pPrototype
 
 		private CubeModel[] _cubes;
 
+		private Dictionary<int, HashSet<int>> _lockedColumns;
+		private Dictionary<int, HashSet<int>> _lockedRows;
+
 		public int Columns { get; private set; }
 		public int Rows { get; private set; }
 
@@ -53,7 +56,43 @@ namespace pPrototype
 		{
 			Columns = columns;
 			Rows = rows;
+
+			_lockedColumns = new Dictionary<int, HashSet<int>>();
+			_lockedRows = new Dictionary<int, HashSet<int>>();
+
 			AssignCubes(cubes);
+		}
+
+		public void LockColumns(int columnA, int columnB)
+		{
+			AddLockedColumn(columnA, columnB);
+			AddLockedColumn(columnB, columnA);
+		}
+
+		public void LockRows(int rowA, int rowB)
+		{
+			AddLockedRow(rowA, rowB);
+			AddLockedRow(rowB, rowA);
+		}
+
+		private void AddLockedRow(int rowA, int rowB)
+		{
+			if (!_lockedRows.ContainsKey(rowA))
+			{
+				_lockedRows[rowA] = new HashSet<int>();
+			}
+
+			_lockedRows[rowA].Add(rowB);
+		}
+
+		private void AddLockedColumn(int columnA, int columnB)
+		{
+			if (!_lockedColumns.ContainsKey(columnA))
+			{
+				_lockedColumns[columnA] = new HashSet<int>();
+			}
+
+			_lockedColumns[columnA].Add(columnB);
 		}
 
 		public PlayerMove Update(Move move, bool fakeIt = false)
@@ -76,11 +115,30 @@ namespace pPrototype
 		private PlayerMove UpdateRow(int row, MoveInput input, bool fakeIt)
 		{
 			var indicesToUpdate = new List<int>();
-			var offset = row * Columns;
+			var originalOffset = row * Columns;
 
-			for (int i = 0; i < Columns; ++i)
+			HashSet<int> lockedRows;
+			_lockedRows.TryGetValue(row, out lockedRows);
+
+			var offSets = new List<int> { originalOffset };
+
+			if (lockedRows != null)
 			{
-				indicesToUpdate.Add(offset + i);
+				foreach (var lockedRow in lockedRows)
+				{
+					if (lockedRow != originalOffset)
+					{
+						offSets.Add(lockedRow * Columns);
+					}
+				}
+			}
+
+			foreach (var offset in offSets)
+			{
+				for (int i = 0; i < Columns; ++i)
+				{
+					indicesToUpdate.Add(offset + i);
+				}
 			}
 
 			return DoUpdate(indicesToUpdate, input, fakeIt);
@@ -90,9 +148,20 @@ namespace pPrototype
 		{
 			var indicesToUpdate = new List<int>();
 
+			HashSet<int> lockedColumns;
+			_lockedColumns.TryGetValue(column, out lockedColumns);
+
 			for (int i = 0; i < Rows; ++i)
 			{
 				indicesToUpdate.Add(column + (Columns * i));
+
+				if (lockedColumns != null)
+				{
+					foreach (var lockedColumn in lockedColumns)
+					{
+						indicesToUpdate.Add(lockedColumn + (Columns * i));
+					}
+				}
 			}
 
 			return DoUpdate(indicesToUpdate, input, fakeIt);

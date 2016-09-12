@@ -27,6 +27,18 @@ namespace pPrototype
 			return null;
 		}
 
+		public void LockColumns(int columnA, int columnB)
+		{
+			Background.LockColumns(columnA, columnB);
+			Foreground.LockColumns(columnA, columnB);
+		}
+
+		public void LockRows(int rowA, int rowB)
+		{
+			Background.LockRows(rowA, rowB);
+			Foreground.LockRows(rowA, rowB);
+		}
+
 		public void SetBackground(int columns, int rows, Colour[] colours)
 		{
 			Background = new BackgroundModel(columns, rows, colours);

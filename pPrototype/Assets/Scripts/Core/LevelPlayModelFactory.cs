@@ -12,7 +12,44 @@ namespace pPrototype
 
 		public static LevelPlayModel Create(LevelData data)
 		{
-			return Create(data.Cells.ToList(), data.Columns, data.Rows);
+			var lpm = Create(data.Cells.ToList(), data.Columns, data.Rows);
+
+			SetupLaneLocks(lpm, data);
+
+			return lpm;
+		}
+
+		public static void SetupLaneLocks(LevelPlayModel model, LevelData data)
+		{
+			if (data.LockedColumns != null && data.LockedColumns.Length > 0)
+			{
+				LockColumns(model, data.LockedColumns);
+			}
+
+			if (data.LockedRows != null && data.LockedRows.Length > 0)
+			{
+				LockRows(model, data.LockedRows);
+			}
+		}
+
+		private static void LockColumns(LevelPlayModel model, int[] columnsToLock)
+		{
+			var index = 0;
+			while (index < columnsToLock.Length)
+			{
+				model.LockColumns(columnsToLock[index], columnsToLock[index + 1]);
+				index += 2;
+			}
+		}
+
+		private static void LockRows(LevelPlayModel model, int[] rowsToLock)
+		{
+			var index = 0;
+			while (index < rowsToLock.Length)
+			{
+				model.LockRows(rowsToLock[index], rowsToLock[index + 1]);
+				index += 2;
+			}
 		}
 
 		public static LevelPlayModel Create(List<string> level, int columns, int rows)

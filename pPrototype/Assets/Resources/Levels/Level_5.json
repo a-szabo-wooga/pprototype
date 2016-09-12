@@ -6,5 +6,7 @@
 		"Bcggbbgg",
 		"BcbGGGGG",
 		"BcGGbbGG"
-	]
+	],
+	"LockedColumns" :
+	[ 0, 2 ]
 }

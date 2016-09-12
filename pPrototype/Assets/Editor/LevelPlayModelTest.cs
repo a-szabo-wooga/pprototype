@@ -61,6 +61,67 @@ public class LevelParserTest
 }
 
 [TestFixture]
+public class LaneLockTest
+{
+	[Test]
+	public void SimpleTwoLaneTest()
+	{
+		var cellOne = "RcWWrwRW";
+		var cellTwo = "RcWWrwRW";
+
+		var level = new List<string> { cellOne, cellTwo };
+		var lpm = LevelPlayModelFactory.Create(level, 2, 1);
+
+		lpm.LockColumns(0, 1);
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Unstarted);
+
+		lpm.MakeAMove(new Move(0, 0, MoveInput.SwipeDown));
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Won);
+	}
+
+	[Test]
+	public void SimpleTwoLaneRowTest()
+	{
+		var cellOne = "RcWWrwWW";
+		var cellTwo = "RcWWrwWW";
+
+		var level = new List<string> { cellOne, cellTwo };
+		var lpm = LevelPlayModelFactory.Create(level, 1, 2);
+
+		lpm.LockRows(0, 1);
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Unstarted);
+
+		lpm.MakeAMove(new Move(0, 1, MoveInput.SwipeRight));
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Won);
+	}
+
+	[Test]
+	public void Locked2x2Test()
+	{
+		var cellOne = "RcWWrwWW";
+		var cellTwo = "RcWWrwWW";
+		var cellThree = "RcWWrwWW";
+		var cellFour = "RcWWrwWW";
+
+		var level = new List<string> { cellOne, cellTwo, cellThree, cellFour };
+		var lpm = LevelPlayModelFactory.Create(level, 2, 2);
+
+		lpm.LockRows(0, 1);
+		lpm.LockColumns(0, 1);
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Unstarted);
+
+		lpm.MakeAMove(new Move(0, 1, MoveInput.SwipeRight));
+
+		Assert.IsTrue(lpm.CurrentState == LevelPlayState.Won);
+	}
+}
+
+[TestFixture]
 public class BackgroundModelTest
 {
 	[Test]

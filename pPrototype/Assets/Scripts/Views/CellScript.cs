@@ -6,15 +6,18 @@ namespace pPrototype
 	{
 		public CubeScript Cube;
 		public BgPanelScript Background;
+		public GameObject HorizontalLock;
+		public GameObject VerticalLock;
+
 		public int Column;
 		public int Row;
 
-		public void Setup(int column, int row, Colour backgroundColour, CubeModel cube)
+		public void Setup(int column, int row, Colour backgroundColour, CubeModel cube, bool lockedHorizontally, bool lockedVertically)
 		{
 			Column = column;
 			Row = row;
 			SetupCube(cube);
-			SetupBackground(backgroundColour);
+			SetupBackground(backgroundColour, lockedHorizontally, lockedVertically);
 		}
 
 		public void Refresh(MoveInput input)
@@ -70,7 +73,7 @@ namespace pPrototype
 			}
 		}
 
-		private void SetupBackground(Colour backgroundColour)
+		private void SetupBackground(Colour backgroundColour, bool lockedHorizontally, bool lockedVertically)
 		{
 			if (backgroundColour != Colour.None)
 			{
@@ -81,6 +84,9 @@ namespace pPrototype
 			{
 				Background.gameObject.SetActive(false);
 			}
+
+			HorizontalLock.gameObject.SetActive(lockedHorizontally);
+			VerticalLock.gameObject.SetActive(lockedVertically);
 		}
 	}
 }

@@ -141,14 +141,17 @@ namespace pPrototype
 			{
 				var cell = Object.Instantiate<CellScript>(CellPrefab);
 				SetCellPosition(cell, column, row);
-				SetupCellData(column, row, cell, bgColour, lpm.Foreground.GetCubeModelOrNull(column, row));
+				SetupCellData(column, row, cell, bgColour, lpm.Foreground.GetCubeModelOrNull(column, row),
+							  lpm.Background.IsLockedHorizontally(row),
+							  lpm.Background.IsLockedVertically(column));
 				_cells[lpm.Background.GetID(column, row)] = cell;
 			}
 		}
 
-		private void SetupCellData(int column, int row, CellScript cell, Colour bgColour, CubeModel cube)
+		private void SetupCellData(int column, int row, CellScript cell, Colour bgColour, CubeModel cube, bool lockedHorizontally,
+									bool lockedVertically)
 		{
-			cell.Setup(column, row, bgColour, cube);
+			cell.Setup(column, row, bgColour, cube, lockedHorizontally, lockedVertically);
 		}
 
 		private void SetCellPosition(CellScript cell, int column, int row)
